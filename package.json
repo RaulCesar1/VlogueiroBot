@@ -1,0 +1,19 @@
+{
+  "name": "VlogueiroBot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/RaulCesar1/VlogueiroBot",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node src/index.js"
+  },
+  "dependencies": {
+    "@discordjs/rest": "^1.0.1",
+    "async": "^3.2.4",
+    "discord-api-types": "^0.37.2",
+    "discord.js": "^14.2.0",
+    "dotenv": "^16.0.1",
+    "mee6-levels-api": "^1.3.0",
+    "mongoose": "^6.5.2"
+  }
+}
