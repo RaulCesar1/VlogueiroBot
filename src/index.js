@@ -7,7 +7,10 @@ const {
 	Collection,
 	ActionRowBuilder,
 	ButtonBuilder,
-	ButtonStyle
+	ButtonStyle,
+	EmbedBuilder,
+	PermissionsBitField,
+	ChannelType,
 } = require('discord.js')
 const { REST } = require('@discordjs/rest')
 const { Routes } = require('discord-api-types/v10')
@@ -79,8 +82,73 @@ client.on('ready', async () => {
 	}
 }) */
 
+const Ticket = require('./ticket/Ticket.js')
+
 client.on('interactionCreate', async (interaction) => {
 	if (interaction.user.bot === true) return
+
+	if(interaction.customId === "ticket-create") {
+		try {
+			let AssuntoPrincipal = interaction.components[0].components[0].value
+			let Descricao = interaction.components[1].components[0].value
+
+			let newTicket = new Ticket(AssuntoPrincipal, Descricao)
+
+			let categoriaTickets = interaction.guild.channels.cache.get(process.env.CATEGORIA_TICKETS)
+			let roleMOD = interaction.guild.roles.cache.get('729692294126633060')
+
+			interaction.guild.channels.create({
+				name: `ticket-${newTicket.id}`,
+				parent: categoriaTickets,
+				type: ChannelType.GuildText,
+				reason: `Ticket criado por ${interaction.user.tag}`,
+				permissionOverwrites: [
+					{
+						id: interaction.guild.id,
+						deny: [PermissionsBitField.Flags.ViewChannel],
+					},
+					{
+						id: interaction.user.id,
+						allow: [
+							PermissionsBitField.Flags.ViewChannel,
+							PermissionsBitField.Flags.SendMessages
+						],
+					},
+					{
+						id: roleMOD,
+						allow: [
+							PermissionsBitField.Flags.ViewChannel,
+							PermissionsBitField.Flags.SendMessages
+						],
+					},
+				]
+			}).then(async ticketPrivado => {
+				let embedAssuntoPrincipal = new EmbedBuilder()
+					.setDescription(`\`\`\`${AssuntoPrincipal}\`\`\``)
+					.setColor("Orange")
+
+				let embedDescricao = new EmbedBuilder()
+					.setDescription(`\`\`\`${Descricao}\`\`\``)
+					.setColor("Orange")
+
+				let embedInfo = new EmbedBuilder()
+					.setDescription(`
+					    **\`#${newTicket.id}\`**
+						Ticket criado por: **${interaction.user.tag}**
+						ID do usuário: **${interaction.user.id}**
+					`)
+					.setFooter({ text: 'Para fechar o ticket, utilize: /ticket fechar' })
+					.setColor('Orange')
+
+				await ticketPrivado.send({ embeds: [embedAssuntoPrincipal, embedDescricao] })
+				await ticketPrivado.send({ embeds: [embedInfo] })
+				await interaction.reply({ content: `Ticket criado com sucesso! <#${ticketPrivado.id}>`, ephemeral: true })
+			})
+		} catch(e) {
+			console.log(e)
+		}
+		return
+	}
 
 	if(interaction.customId === "btn_ban") {
 		let idUser = interaction.message.embeds[0].fields.filter(r => r.name === "ID:")[0].value.replace(/`/g, "")

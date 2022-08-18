@@ -67,6 +67,8 @@ module.exports = {
                     if(user.level >=15) interaction.member.roles.add(JUNIOR)
                     interaction.member.roles.add(ATIVO)
                     interaction.reply({ content: 'Cargos adicionados!', ephemeral: true })
+                } else {
+                    return interaction.reply({ ephemeral: true, content: 'Você não possui nenhum cargo para solicitar!' })
                 }
             });
             return
