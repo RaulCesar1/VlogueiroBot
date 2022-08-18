@@ -5,12 +5,11 @@ const User = new Schema({
         type: String,
         required: true,
     },
-    trustFactor: {
+    reports: {
         type: Number,
         required: true,
-        default: 100,
+        default: 0,
     },
-    reports: Array
 })
 
 module.exports = model('User', User);

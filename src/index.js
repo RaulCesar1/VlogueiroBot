@@ -1,5 +1,7 @@
 require('dotenv').config()
 
+const User = require('./models/User.js')
+
 const { 
 	Client,
 	Collection,
@@ -64,7 +66,18 @@ client.on('ready', async () => {
 	await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
 		body: commands,
 	})
+
+	console.log(`Tag: ${client.user.tag}\nID: ${client.user.id}`)
 })
+
+/* client.on('messageCreate', async message => {
+	const user = await User.findOne({ id: message.author.id })
+	if(!user) {
+		new User({ id: message.author.id })
+		console.log(`Usuário criado na database: ${message.author.id} | ${message.author.tag}`)
+		return
+	}
+}) */
 
 client.on('interactionCreate', async (interaction) => {
 	if (interaction.user.bot === true) return

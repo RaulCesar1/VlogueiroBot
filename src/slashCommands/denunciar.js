@@ -9,10 +9,10 @@ const {
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('report')
-		.setDescription('Reporta um usuário para a equipe de moderação.')
-        .addUserOption(option => option.setName('usuário').setDescription('Usuário que deseja reportar.').setRequired(true))
-        .addStringOption(option => option.setName('motivo').setDescription('Motivo pelo qual está reportando este usuário.').setRequired(true))
+		.setName('denunciar')
+		.setDescription('Denuncia um usuário para a equipe de moderação.')
+        .addUserOption(option => option.setName('usuário').setDescription('Usuário que deseja denunciar.').setRequired(true))
+        .addStringOption(option => option.setName('motivo').setDescription('Motivo pelo qual está denunciando este usuário.').setRequired(true))
         .addAttachmentOption(option => option.setName('provas').setDescription('Prova (imagem; opcional)').setRequired(false)),
 	async execute(interaction, client) {
         const usuarioReportado = interaction.options.get('usuário')
@@ -58,11 +58,10 @@ module.exports = {
                 }
             )
             .setThumbnail(usuarioReportado.user.avatarURL())
-            .setFooter({ text: `Reportado por ${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
+            .setFooter({ text: `Denunciado por ${interaction.user.tag}`, iconURL: interaction.user.avatarURL() })
 
             await canalReports.send({ embeds: [embedNovoReport], components: [botoes] })
             provas?await canalReports.send(`Imagem enviada pelo usuário:\n${provas.attachment.url}`):''
-    
             await interaction.reply({ content: `Sua denúncia foi enviada com sucesso! Obrigado!`, ephemeral: true })
         } catch(e) {
             console.log(e)
